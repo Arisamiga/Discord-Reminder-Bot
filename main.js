@@ -51,6 +51,45 @@ client.on("ready", () => {
         activities: [{ name: `Flies.`, type: ActivityType.Watching }],
       });
     console.log(`Logged in as ${client.user.tag}!`);
+
+	// Check if any reminders are due
+	const reminders = require('./reminders.json');
+	const now = new Date();
+	for (const reminder of reminders.Reminders) {
+		const reminderDate = new Date(reminder.timestamp);
+		if (reminderDate < now) {
+			console.log(`[REMINDER] ${reminder.roleid}`);
+
+			// Remove the reminder from the list
+			const index = reminders.Reminders.indexOf(reminder);
+			if (index > -1) {
+				reminders.Reminders.splice(index, 1);
+			}
+		}
+	}
+	fs.writeFileSync('./reminders.json', JSON.stringify(reminders, null, 2));
+
+	// Set up the reminder interval
+	setInterval(() => {
+
+		// Check if any reminders are due
+		const reminders = require('./reminders.json');
+		const now = new Date();
+		for (const reminder of reminders.Reminders) {
+			const reminderDate = new Date(reminder.timestamp);
+			if (reminderDate < now) {
+				console.log(`[REMINDER] ${reminder.roleid}`);
+
+				// Remove the reminder from the list
+				const index = reminders.Reminders.indexOf(reminder);
+				if (index > -1) {
+					reminders.Reminders.splice(index, 1);
+				}
+			}
+		}
+		fs.writeFileSync('./reminders.json', JSON.stringify(reminders, null, 2));
+	}
+	, 60000);
 });
 
 client.on(Events.InteractionCreate, async interaction => {
