@@ -1,5 +1,6 @@
 {
     "clientId": "",
     "guildId": "",
-    "token": ""
+    "token": "",
+    "reminderchannel": ""
 }

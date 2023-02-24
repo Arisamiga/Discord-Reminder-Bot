@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, ActivityType, REST, Routes } = require('discord.js');
-const { token, clientId, guildId } = require('./config.json');
+const { token, clientId, guildId, reminderchannel } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -58,8 +58,7 @@ client.on("ready", () => {
 	for (const reminder of reminders.Reminders) {
 		const reminderDate = new Date(reminder.timestamp);
 		if (reminderDate < now) {
-			console.log(`[REMINDER] ${reminder.roleid}`);
-
+			console.log("[INFO] Reminder Was Due Before Bot Started. Removing Reminder...");
 			// Remove the reminder from the list
 			const index = reminders.Reminders.indexOf(reminder);
 			if (index > -1) {
@@ -71,20 +70,44 @@ client.on("ready", () => {
 
 	// Set up the reminder interval
 	setInterval(() => {
-
 		// Check if any reminders are due
 		const reminders = require('./reminders.json');
-		const now = new Date();
+		const now = new Date().getTime();
 		for (const reminder of reminders.Reminders) {
-			const reminderDate = new Date(reminder.timestamp);
+			const reminderDate = reminder.timestamp;
+			console.log(reminderDate, now);
+			// Check for reminders happening now
 			if (reminderDate < now) {
-				console.log(`[REMINDER] ${reminder.roleid}`);
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting is Starting Now!`);
 
 				// Remove the reminder from the list
 				const index = reminders.Reminders.indexOf(reminder);
 				if (index > -1) {
 					reminders.Reminders.splice(index, 1);
 				}
+			}
+			// Check for reminders happening in 5 minutes
+			else if (reminderDate < now + 300000) {
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 5 minutes!`);
+			}
+			// Check for reminders happening in 15 minutes
+			else if (reminderDate < now + 900000) {
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 15 minutes!`);
+			}
+
+			// Check for reminders happening in 30 minutes
+			else if (reminderDate < now + 1800000) {
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 30 minutes!`);
+			}
+
+			// Check for reminders happening in a hour
+			else if (reminderDate < now + 3600000) {
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 1 hour!`);
+			}
+
+			// Check for reminders happening in a day
+			else if (reminderDate < now + 86400000) {
+				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 1 day!`);
 			}
 		}
 		fs.writeFileSync('./reminders.json', JSON.stringify(reminders, null, 2));

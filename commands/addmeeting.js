@@ -55,6 +55,11 @@ module.exports = {
             }
         }
 
+        // Check if timestamp is valid is before current time
+        if (interaction.options.getInteger("timestamp") < Math.floor(Date.now() / 1000)) {
+            return interaction.reply({ content: `Timestamp: **${interaction.options.getInteger("timestamp")}** is in the past.`, ephemeral: true });
+        }
+
 		await interaction.reply({ content: `Meeting at: ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()} \nMentioning: ${interaction.options.getString("role")}. \nIs this correct?`, components: [row], ephemeral: true });
         
         const filter = (interaction) => {
@@ -68,8 +73,9 @@ module.exports = {
 
         collector.on('end', async (ButtonInteraction) => {
             if (ButtonInteraction.first().customId === 'Approve') {
-                await ButtonInteraction.first().reply(`Meeting Scheduled for ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()}. Role: ${interaction.options.getString("role")}`);
-                addRemindertoJSON(interaction.options.getInteger("timestamp"), interaction.options.getString("role"));
+                // Dont mention the role
+                addRemindertoJSON(parseInt(interaction.options.getInteger("timestamp")) * 1000, interaction.options.getString("role"));
+                await ButtonInteraction.first().update({ content: `Meeting Scheduled for ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()}. Role: ${interaction.options.getString("role")}`, components: [], ephemeral: true });
             }
             else if (ButtonInteraction.first().customId === 'Deny') {
                 await ButtonInteraction.first().reply({content:`Meeting not added.`, ephemeral: true });
