@@ -72,11 +72,10 @@ client.on("ready", () => {
 		const now = new Date().getTime();
 		for (const reminder of reminders.Reminders) {
 			const reminderDate = reminder.timestamp;
-			console.log(reminderDate, now);
 			// Check for reminders happening now
-			if (reminderDate < now) {
+			if (reminderDate < now && !reminder.reminders[0].now) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting is Starting Now!`);
-
+				reminder.reminders[0].now = true;
 				// Remove the reminder from the list
 				const index = reminders.Reminders.indexOf(reminder);
 				if (index > -1) {
@@ -84,27 +83,51 @@ client.on("ready", () => {
 				}
 			}
 			// Check for reminders happening in 5 minutes
-			else if (reminderDate < now + 300000) {
+			else if (reminderDate < now + 300000 && !reminder.reminders[0].five) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 5 minutes!`);
+				reminder.reminders[0].five = true;
+
+				// Set all others to true so they don't get sent
+				reminder.reminders[0].fifteen = true;
+				reminder.reminders[0].thirty = true;
+				reminder.reminders[0].hour = true;
+				reminder.reminders[0].day = true;
 			}
 			// Check for reminders happening in 15 minutes
-			else if (reminderDate < now + 900000) {
+			else if (reminderDate < now + 900000 && !reminder.reminders[0].fifteen) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 15 minutes!`);
+				reminder.reminders[0].fifteen = true;
+
+				// Set all others to true so they don't get sent
+				reminder.reminders[0].thirty = true;
+				reminder.reminders[0].hour = true;
+				reminder.reminders[0].day = true;
+
 			}
 
 			// Check for reminders happening in 30 minutes
-			else if (reminderDate < now + 1800000) {
+			else if (reminderDate < now + 1800000 && !reminder.reminders[0].thirty) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 30 minutes!`);
+				reminder.reminders[0].thirty = true;
+
+				// Set all others to true so they don't get sent
+				reminder.reminders[0].hour = true;
+				reminder.reminders[0].day = true;
 			}
 
 			// Check for reminders happening in a hour
-			else if (reminderDate < now + 3600000) {
+			else if (reminderDate < now + 3600000 && !reminder.reminders[0].hour) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 1 hour!`);
+				reminder.reminders[0].hour = true;
+
+				// Set all others to true so they don't get sent
+				reminder.reminders[0].day = true;
 			}
 
 			// Check for reminders happening in a day
-			else if (reminderDate < now + 86400000) {
+			else if (reminderDate < now + 86400000 && !reminder.reminders[0].day) {
 				client.channels.cache.get(reminderchannel).send(`<@&${reminder.roleid}> Meeting in 1 day!`);
+				reminder.reminders[0].day = true;
 			}
 		}
 		fs.writeFileSync('./reminders.json', JSON.stringify(reminders, null, 2));

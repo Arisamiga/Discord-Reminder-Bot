@@ -27,11 +27,33 @@ module.exports = {
             if (role.includes("@")) {
                 const temp_role = role.replace("<@&", "").replace(">", "");
                 const roleInfo = interaction.guild.roles.cache.find(role => role.id === temp_role);
-                reminders.Reminders.push({ "timestamp": timestamp, "roleid": roleInfo.id })
+                reminders.Reminders.push({ 
+                    "timestamp": timestamp, 
+                    "roleid": roleInfo.id,
+                    "reminders": [{
+                        "now": false,
+                        "five": false,
+                        "fifteen": false,
+                        "thirty": false,
+                        "hour": false,
+                        "day": false
+                    }]
+                })
             }
             else {
                 const roleInfo = interaction.guild.roles.cache.find(role => role.name === role);
-                reminders.Reminders.push({ "timestamp": timestamp, "roleid": roleInfo.id })
+                reminders.Reminders.push({ 
+                    "timestamp": timestamp, 
+                    "roleid": roleInfo.id,
+                    "reminders": [{
+                        "now": false,
+                        "five": false,
+                        "fifteen": false,
+                        "thirty": false,
+                        "hour": false,
+                        "day": false
+                    }]
+                })
             }
             fs.writeFile('./reminders.json', JSON.stringify(reminders), (err) => {
                 if (err) {
