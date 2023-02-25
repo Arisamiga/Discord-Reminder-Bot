@@ -1,5 +1,5 @@
 # Discord-Reminder-Bot
-### Simple Bot for Reminding about Meetings
+### Useful Bot for Reminding about Meetings
 
  <a href="https://github.com/Arisamiga/Discord-Reminder-Bot//issues">
    <img alt="Issues" src="https://img.shields.io/github/issues/Arisamiga/Discord-Reminder-Bot?color=0088ff" />
