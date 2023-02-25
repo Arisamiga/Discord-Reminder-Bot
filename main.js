@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, ActivityType, REST, Routes } = require('discord.js');
-const { token, clientId, guildId, reminderchannel } = require('./config.json');
+const { token, clientId, guildId, reminderchannel, activityText } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -27,8 +27,6 @@ for (const file of commandFiles) {
 
 // Construct and prepare an instance of the REST module
 const rest = new REST({ version: '10' }).setToken(token);
-
-// and deploy your commands!
 (async () => {
 	try {
 		console.log(`-> Started refreshing ${commands.length} application (/) commands.`);
@@ -41,14 +39,13 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 		console.log(`-> Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
-		// And of course, make sure you catch and log any errors!
 		console.error(error);
 	}
 })();
 
 client.on("ready", () => {
     client.user.setPresence({
-        activities: [{ name: `Flies.`, type: ActivityType.Watching }],
+        activities: [{ name: activityText, type: ActivityType.Watching }],
       });
     console.log(`Logged in as ${client.user.tag}!`);
 
