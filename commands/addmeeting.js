@@ -1,5 +1,8 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, Events, ActionRowBuilder } = require('discord.js');
 const fs = require('fs');
+const ical = require('ical-generator');
+// const http = require('http');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -82,8 +85,7 @@ module.exports = {
             return interaction.reply({ content: `Timestamp: **${interaction.options.getInteger("timestamp")}** is in the past.`, ephemeral: true });
         }
 
-		await interaction.reply({ content: `Meeting at: ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()} \nMentioning: ${interaction.options.getString("role")}. \nIs this correct?`, components: [row], ephemeral: true });
-        
+		await interaction.reply({ content: `Meeting at: ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()} \nMentioning: ${interaction.options.getString("role")}. \nIs this correct?`, components: [row], ephemeral: true});
         const filter = (interaction) => {
             if (interaction.user.id === interaction.user.id) {
                 return true;
@@ -97,7 +99,29 @@ module.exports = {
             if (ButtonInteraction.first().customId === 'Approve') {
                 // Dont mention the role
                 addRemindertoJSON(parseInt(interaction.options.getInteger("timestamp")) * 1000, interaction.options.getString("role"));
-                await ButtonInteraction.first().update({ content: `Meeting Scheduled for ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()}. Role: ${interaction.options.getString("role")}`, components: [], ephemeral: true });
+                const calendar = ical({name: 'Discord Meeting'});
+                const startTime = new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000);
+                const endTime = new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000);
+                //endTime.setHours(startTime.getHours()+1);
+                calendar.createEvent({
+                    start: startTime,
+                    end: endTime,
+                    summary: 'Discord Meeting',
+                    description: `Meeting Scheduled for ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()}. \n Role: ${interaction.options.getString("role")}`,
+                    location: 'Discord, usually',
+                    url: 'N/A'
+                });
+                fs.writeFile('./calendar.ics', calendar.toString(), (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+                await ButtonInteraction.first().update({ content: `Meeting Scheduled for ${new Date(parseInt(interaction.options.getInteger("timestamp")) * 1000).toLocaleString()}. Role: ${interaction.options.getString("role")}`, components: [], ephemeral: true ,
+                files: [{
+                    attachment: './calendar.ics',
+                    name: 'calendar.ics'
+                }],
+            });
             }
             else if (ButtonInteraction.first().customId === 'Deny') {
                 await ButtonInteraction.first().reply({content:`Meeting not added.`, ephemeral: true });
