@@ -2,7 +2,7 @@
 ### Useful Bot for Reminding about Meetings
 
  <a href="https://github.com/Arisamiga/Discord-Reminder-Bot//issues">
-   <img alt="Issues" src="https://img.shields.io/github/issues/Arisamiga/Discord-Reminder-Bot?color=0088ff" />
+   <img alt="Issues" src="https://img.shields.io/github/issues/Arisamiga/Discord-Reminder-bot?color=0088ff" />
   </a>
   
 [![CodeFactor](https://www.codefactor.io/repository/github/arisamiga/discord-reminder-bot/badge?s=5da8fad11b2d4aef8b5655557b6555541562f523)](https://www.codefactor.io/repository/github/arisamiga/discord-reminder-bot)  
