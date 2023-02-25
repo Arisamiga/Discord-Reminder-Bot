@@ -1,7 +1,7 @@
 {
-    "clientId": "",
-    "guildId": "",
-    "token": "",
-    "reminderchannel": "",
-    "activityText": ""
+    "clientId": "(Enter Bot's Client ID here)",
+    "guildId": "(Enter Guild ID here)",
+    "token": "(Enter Token here)",
+    "reminderchannel": "(Enter Channel ID for Reminders)",
+    "activityText": "(Enter Bot's Activity Text)"
 }
