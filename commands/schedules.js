@@ -19,7 +19,7 @@ module.exports = {
             const role = interaction.guild.roles.cache.find(role => role.id === reminders.Reminders[i].roleid);
             embed.fields.push({
                 "name": "Meeting",
-                "value": `**Date:** ${new Date(reminders.Reminders[i].timestamp * 1000)}\n**Role:** ${role}`
+                "value": `**Date:** ${new Date(reminders.Reminders[i].timestamp)}\n**Role:** ${role}`
             })
         }
         await interaction.reply({ embeds: [embed] });
